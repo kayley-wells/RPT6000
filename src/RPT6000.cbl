@@ -1,9 +1,9 @@
        IDENTIFICATION DIVISION.
 
-       PROGRAM-ID. RPT5000.
+       PROGRAM-ID. RPT6000.
       ****************************************************************
-      * PROGRAM NAME: RPT5000
-      * AUTHORS: Kayley Wells & Grant Peverett
+      * PROGRAM NAME: RPT6000
+      * AUTHORS: Kayley Wells
       * DATE: 03/24/2026
       * DESCRIPTION: Year-To-Date Sales Report with Change Columns
       ****************************************************************
@@ -53,14 +53,12 @@
            05  OLD-SALESREP-NUMBER     PIC 99.
            05  OLD-BRANCH-NUMBER       PIC 99.
 
-       01  PRINT-FIELDS.
        01  PRINT-FIELDS        PACKED-DECIMAL.
            05  PAGE-COUNT      PIC S9(3)   VALUE ZERO.
            05  LINES-ON-PAGE   PIC S9(3)   VALUE +55.
            05  LINE-COUNT      PIC S9(3)   VALUE +99.
            05  SPACE-CONTROL   PIC S9.
 
-       01  TOTAL-FIELDS.
        01  TOTAL-FIELDS               PACKED-DECIMAL.
            05 SALESREP-TOTAL-THIS-YTD PIC S9(6)V99   VALUE ZERO.
            05 SALESREP-TOTAL-LAST-YTD PIC S9(6)V99   VALUE ZERO.
@@ -71,7 +69,6 @@
            05 GRAND-TOTAL-CHANGE-AMT  PIC S9(7)V99   VALUE ZERO.
            05 GRAND-TOTAL-CHANGE-PCT  PIC S9(3)V9    VALUE ZERO.
 
-       01  CALCULATION-FIELDS.
        01  CALCULATION-FIELDS         PACKED-DECIMAL.
            05  WS-CHANGE-AMOUNT       PIC S9(7)V99   VALUE ZERO.
            05  WS-CHANGE-PERCENT      PIC S9(3)V9    VALUE ZERO.
@@ -95,7 +92,7 @@
            05  FILLER          PIC X(20)   VALUE "YEAR-TO-DATE SALES R".
            05  FILLER          PIC X(5)    VALUE "EPORT".
            05  FILLER          PIC X(23)   VALUE SPACE.
-           05  FILLER          PIC X(6)    VALUE "PAGE: ".
+           05  FILLER          PIC X(11)    VALUE "     PAGE: ".
            05  HL1-PAGE-NUMBER PIC ZZZ9.
 
        01  HEADING-LINE-2.
@@ -103,7 +100,7 @@
            05  HL2-HOURS       PIC 9(2).
            05  FILLER          PIC X(1)    VALUE ":".
            05  HL2-MINUTES     PIC 9(2).
-           05  FILLER          PIC X(72)   VALUE SPACE.
+           05  FILLER          PIC X(77)   VALUE SPACE.
            05  FILLER          PIC X(7)   VALUE "RPT6000".
 
        01  HEADING-LINE-3.
@@ -111,8 +108,8 @@
            05  FILLER PIC X(13) VALUE "SALES CUST   ".
            05  FILLER PIC X(23) VALUE "SALES                  ".
            05  FILLER PIC X(16) VALUE "  SALES    ".
-           05  FILLER PIC X(14) VALUE "CHANGE        ".
-           05  FILLER PIC X(7)  VALUE "CHANGE ".
+           05  FILLER PIC X(15) VALUE "CHANGE         ".
+           05  FILLER PIC X(6)  VALUE "CHANGE".
            05  FILLER PIC X(44) VALUE SPACE.
 
        01  HEADING-LINE-4.
@@ -121,9 +118,9 @@
            05  FILLER PIC X(24) VALUE " CUSTOMER NAME          ".
            05  FILLER PIC X(16) VALUE "  THIS YTD      ".
            05  FILLER PIC X(14) VALUE "LAST YTD      ".
-           05  FILLER PIC X(13) VALUE "AMOUNT       ".
-           05  FILLER PIC X(7)  VALUE "PERCENT".
-           05  FILLER PIC X(44) VALUE SPACE.
+           05  FILLER PIC X(13) VALUE " AMOUNT      ".
+           05  FILLER PIC X(8)  VALUE " PERCENT".
+           05  FILLER PIC X(43) VALUE SPACE.
 
        01  HEADING-LINE-5.
            05  FILLER PIC X(6)  VALUE ALL "-".
@@ -140,7 +137,7 @@
            05  FILLER PIC X(4)  VALUE SPACE.
            05  FILLER PIC X(10) VALUE ALL "-".
            05  FILLER PIC X(4)  VALUE SPACE.
-           05  FILLER PIC X(7)  VALUE ALL "-".
+           05  FILLER PIC X(9)  VALUE ALL "-".
            05  FILLER PIC X(38) VALUE SPACE.
 
        01  CUSTOMER-LINE.
@@ -159,7 +156,6 @@
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  CL-CHANGE-AMOUNT    PIC ZZ,ZZ9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
-           05  CL-CHANGE-PERCENT   PIC ZZ9.9-.
            05  CL-CHANGE-PERCENT   PIC ---9.9.
            05  CL-CHANGE-PERCENT-R REDEFINES CL-CHANGE-PERCENT
                                    PIC X(6).
@@ -168,17 +164,14 @@
        01  SALESREP-TOTAL-LINE.
            05  FILLER              PIC X(30)   VALUE SPACE.
            05  FILLER              PIC X(14)   VALUE "SALESREP TOTAL".
-           05  STL-SALES-THIS-YTD  PIC ZZZ,ZZ9.99-.
            05  STL-SALES-THIS-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
-           05  STL-SALES-LAST-YTD  PIC ZZZ,ZZ9.99-.
            05  STL-SALES-LAST-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
-           05  STL-CHANGE-AMOUNT   PIC ZZZ,ZZ9.99-.
            05  STL-CHANGE-AMOUNT   PIC $$$,$$9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
-           05  STL-CHANGE-PERCENT  PIC ZZ9.9-.
            05  STL-CHANGE-PERCENT  PIC +++9.9.
+           05  STL-CHANGE-PERCENT-R REDEFINES STL-CHANGE-PERCENT 
            05  STL-CHANGE-PERCENT-R REDEFINES STL-CHANGE-PERCENT
                                    PIC X(6).
            05  FILLER              PIC X(46)   VALUE "*".
@@ -186,17 +179,14 @@
        01  BRANCH-TOTAL-LINE.
            05  FILLER              PIC X(30)   VALUE SPACE.
            05  FILLER              PIC X(14)   VALUE "BRANCH TOTAL".
-           05  BTL-SALES-THIS-YTD  PIC ZZZ,ZZ9.99-.
            05  BTL-SALES-THIS-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
-           05  BTL-SALES-LAST-YTD  PIC ZZZ,ZZ9.99-.
            05  BTL-SALES-LAST-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
-           05  BTL-CHANGE-AMOUNT   PIC ZZZ,ZZ9.99-.
            05  BTL-CHANGE-AMOUNT   PIC $$$,$$9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
-           05  BTL-CHANGE-PERCENT  PIC ZZ9.9-.
            05  BTL-CHANGE-PERCENT  PIC +++9.9.
+           05  BTL-CHANGE-PERCENT-R REDEFINES BTL-CHANGE-PERCENT 
            05  BTL-CHANGE-PERCENT-R REDEFINES BTL-CHANGE-PERCENT
                                    PIC X(6).
            05  FILLER              PIC X(48)   VALUE "**".
@@ -218,13 +208,11 @@
            05  GTL-SALES-THIS-YTD  PIC Z,ZZZ,ZZ9.99-.
            05  FILLER              PIC X(1)    VALUE SPACE.
            05  GTL-SALES-LAST-YTD  PIC Z,ZZZ,ZZ9.99-.
-           05  GTL-CHANGE-AMOUNT   PIC Z,ZZZ,ZZ9.99-.
+\           05  GTL-CHANGE-AMOUNT   PIC Z,ZZZ,ZZ9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  GTL-CHANGE-PERCENT  PIC ZZ9.9-.
            05  FILLER              PIC X(47)   VALUE "***".
 
-       01  DASH-SEPARATOR-LINE.
-           05  FILLER PIC X(130) VALUE ALL "-".
 
        PROCEDURE DIVISION.
        000-PREPARE-SALES-REPORT.
@@ -263,8 +251,8 @@
               PERFORM 355-PRINT-SALESREP-LINE
               PERFORM 360-PRINT-BRANCH-LINE
               PERFORM 320-PRINT-CUSTOMER-LINE
-              MOVE CM-SALESREP-NUMBER TO OLD-SALESREP-NUMBER
-              MOVE CM-BRANCH-NUMBER TO OLD-BRANCH-NUMBER
+      *        MOVE CM-SALESREP-NUMBER TO OLD-SALESREP-NUMBER
+      *        MOVE CM-BRANCH-NUMBER TO OLD-BRANCH-NUMBER
            WHEN CM-SALESREP-NUMBER > OLD-SALESREP-NUMBER
               PERFORM 355-PRINT-SALESREP-LINE
               PERFORM 320-PRINT-CUSTOMER-LINE
@@ -281,16 +269,19 @@
 
 
        320-PRINT-CUSTOMER-LINE.
-           IF LINE-COUNT > LINES-ON-PAGE
+           IF LINE-COUNT >= LINES-ON-PAGE
               PERFORM 330-PRINT-HEADING-LINES.
-           IF NOT-FIRST-RECORD
-              MOVE CM-BRANCH-NUMBER TO CL-BRANCH-NUMBER
+
+           IF CM-BRANCH-NUMBER NOT = OLD-BRANCH-NUMBER
+                MOVE CM-BRANCH-NUMBER TO CL-BRANCH-NUMBER
            ELSE
-              IF CM-BRANCH-NUMBER > OLD-BRANCH-NUMBER
-                 MOVE CM-BRANCH-NUMBER TO CL-BRANCH-NUMBER
-              ELSE
-                 MOVE SPACE TO CL-BRANCH-NUMBER.
-           MOVE CM-SALESREP-NUMBER TO CL-SALESREP-NUMBER.
+                MOVE SPACES TO CL-BRANCH-NUMBER.
+
+           IF CM-SALESREP-NUMBER NOT = OLD-SALESREP-NUMBER
+              MOVE CM-SALESREP-NUMBER TO CL-SALESREP-NUMBER
+           ELSE
+              MOVE SPACES TO CL-SALESREP-NUMBER.
+
            MOVE CM-CUSTOMER-NUMBER TO CL-CUSTOMER-NUMBER.
            MOVE CM-CUSTOMER-NAME TO CL-CUSTOMER-NAME.
            MOVE CM-SALES-THIS-YTD TO CL-SALES-THIS-YTD.
@@ -299,18 +290,20 @@
               CM-SALES-THIS-YTD - CM-SALES-LAST-YTD.
            MOVE WS-CHANGE-AMOUNT TO CL-CHANGE-AMOUNT.
            IF CM-SALES-LAST-YTD = ZERO
-              MOVE 999.9 TO CL-CHANGE-PERCENT
+              MOVE "  N/A " TO CL-CHANGE-PERCENT-R
            ELSE
               COMPUTE CL-CHANGE-PERCENT ROUNDED =
                  WS-CHANGE-AMOUNT * 100 / CM-SALES-LAST-YTD
                  ON SIZE ERROR
-                    MOVE 999.9 TO CL-CHANGE-PERCENT.
+                    MOVE "OVRFLW" TO CL-CHANGE-PERCENT-R.
            MOVE CUSTOMER-LINE TO PRINT-AREA.
            PERFORM 350-WRITE-REPORT-LINE.
            MOVE 1 TO SPACE-CONTROL.
            ADD CM-SALES-THIS-YTD TO SALESREP-TOTAL-THIS-YTD.
            ADD CM-SALES-LAST-YTD TO SALESREP-TOTAL-LAST-YTD.
-
+           MOVE CM-SALESREP-NUMBER TO OLD-SALESREP-NUMBER.
+           MOVE CM-BRANCH-NUMBER TO OLD-BRANCH-NUMBER.
+           
 
        330-PRINT-HEADING-LINES.
            ADD 1 TO PAGE-COUNT.
@@ -349,11 +342,13 @@
            MOVE WS-CHANGE-AMOUNT TO STL-CHANGE-AMOUNT.
            IF SALESREP-TOTAL-LAST-YTD = ZERO
               MOVE 999.9 TO STL-CHANGE-PERCENT
+              MOVE "  N/A " TO STL-CHANGE-PERCENT-R
            ELSE
               COMPUTE STL-CHANGE-PERCENT ROUNDED =
                  WS-CHANGE-AMOUNT * 100 / SALESREP-TOTAL-LAST-YTD
                  ON SIZE ERROR
                     MOVE 999.9 TO STL-CHANGE-PERCENT.
+                    MOVE "OVRFLW" TO STL-CHANGE-PERCENT-R.
 
            MOVE SALESREP-TOTAL-LINE TO PRINT-AREA.
            MOVE 1 TO SPACE-CONTROL.
@@ -362,8 +357,8 @@
            MOVE 2 TO SPACE-CONTROL.
            ADD SALESREP-TOTAL-THIS-YTD TO BRANCH-TOTAL-THIS-YTD.
            ADD SALESREP-TOTAL-LAST-YTD TO BRANCH-TOTAL-LAST-YTD.
-           MOVE ZERO TO SALESREP-TOTAL-THIS-YTD.
-           MOVE ZERO TO SALESREP-TOTAL-LAST-YTD.
+           INITIALIZE SALESREP-TOTAL-THIS-YTD.
+           INITIALIZE SALESREP-TOTAL-LAST-YTD.
 
 
        360-PRINT-BRANCH-LINE.
@@ -374,11 +369,13 @@
            MOVE WS-CHANGE-AMOUNT TO BTL-CHANGE-AMOUNT.
            IF BRANCH-TOTAL-LAST-YTD = ZERO
               MOVE 999.9 TO BTL-CHANGE-PERCENT
+              MOVE "  N/A " TO BTL-CHANGE-PERCENT-R
            ELSE
               COMPUTE BTL-CHANGE-PERCENT ROUNDED =
                  WS-CHANGE-AMOUNT * 100 / BRANCH-TOTAL-LAST-YTD
                  ON SIZE ERROR
                     MOVE 999.9 TO BTL-CHANGE-PERCENT.
+                    MOVE "OVRFLW" TO BTL-CHANGE-PERCENT-R.
            MOVE BRANCH-TOTAL-LINE TO PRINT-AREA.
            MOVE 1 TO SPACE-CONTROL.
            PERFORM 350-WRITE-REPORT-LINE.
@@ -389,11 +386,8 @@
            MOVE 2 TO SPACE-CONTROL.
            ADD BRANCH-TOTAL-THIS-YTD TO GRAND-TOTAL-THIS-YTD.
            ADD BRANCH-TOTAL-LAST-YTD TO GRAND-TOTAL-LAST-YTD.
-           MOVE ZERO TO BRANCH-TOTAL-THIS-YTD.
-           MOVE ZERO TO BRANCH-TOTAL-LAST-YTD.
-
-           MOVE DASH-SEPARATOR-LINE TO PRINT-AREA
-           PERFORM 350-WRITE-REPORT-LINE.
+           INITIALIZE BRANCH-TOTAL-THIS-YTD.
+           INITIALIZE BRANCH-TOTAL-LAST-YTD.
 
 
        500-PRINT-GRAND-TOTALS.
