@@ -157,55 +157,67 @@
            05  CL-CHANGE-AMOUNT    PIC ZZ,ZZ9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  CL-CHANGE-PERCENT   PIC ZZ9.9-.
+           05  CL-CHANGE-PERCENT   PIC ---9.9.
+           05  CL-CHANGE-PERCENT-R REDEFINES CL-CHANGE-PERCENT
+                                   PIC X(6).
            05  FILLER              PIC X(47)   VALUE SPACE.
 
        01  SALESREP-TOTAL-LINE.
            05  FILLER              PIC X(30)   VALUE SPACE.
            05  FILLER              PIC X(14)   VALUE "SALESREP TOTAL".
            05  STL-SALES-THIS-YTD  PIC ZZZ,ZZ9.99-.
+           05  STL-SALES-THIS-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
            05  STL-SALES-LAST-YTD  PIC ZZZ,ZZ9.99-.
+           05  STL-SALES-LAST-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
            05  STL-CHANGE-AMOUNT   PIC ZZZ,ZZ9.99-.
-           05  FILLER              PIC X(3)    VALUE SPACE.
+           05  STL-CHANGE-AMOUNT   PIC $$$,$$9.99-.
+           05  FILLER              PIC X(4)    VALUE SPACE.
            05  STL-CHANGE-PERCENT  PIC ZZ9.9-.
-           05  FILLER              PIC X(47)   VALUE "*".
+           05  STL-CHANGE-PERCENT  PIC +++9.9.
+           05  STL-CHANGE-PERCENT-R REDEFINES STL-CHANGE-PERCENT 
+                                   PIC X(6).
+           05  FILLER              PIC X(46)   VALUE "*".
 
        01  BRANCH-TOTAL-LINE.
            05  FILLER              PIC X(30)   VALUE SPACE.
            05  FILLER              PIC X(14)   VALUE "BRANCH TOTAL".
            05  BTL-SALES-THIS-YTD  PIC ZZZ,ZZ9.99-.
+           05  BTL-SALES-THIS-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
            05  BTL-SALES-LAST-YTD  PIC ZZZ,ZZ9.99-.
+           05  BTL-SALES-LAST-YTD  PIC $$$,$$9.99-.
            05  FILLER              PIC X(3)    VALUE SPACE.
            05  BTL-CHANGE-AMOUNT   PIC ZZZ,ZZ9.99-.
-           05  FILLER              PIC X(3)    VALUE SPACE.
+           05  BTL-CHANGE-AMOUNT   PIC $$$,$$9.99-.
+           05  FILLER              PIC X(4)    VALUE SPACE.
            05  BTL-CHANGE-PERCENT  PIC ZZ9.9-.
-           05  FILLER              PIC X(47)   VALUE "**".
+           05  BTL-CHANGE-PERCENT  PIC +++9.9.
+           05  BTL-CHANGE-PERCENT-R REDEFINES BTL-CHANGE-PERCENT 
+                                   PIC X(6).
+           05  FILLER              PIC X(48)   VALUE "**".
 
        01  GRAND-TOTAL-LINE-1.
-           05  FILLER              PIC X(25)   VALUE SPACE.
+           05  FILLER              PIC X(30)   VALUE SPACE.
            05  FILLER              PIC X(12)   VALUE "GRAND TOTAL:".
-           05  FILLER              PIC X(8)    VALUE SPACE.
+           05  FILLER              PIC X(3)    VALUE SPACE.
            05  FILLER              PIC X(10)   VALUE ALL "=".
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  FILLER              PIC X(10)   VALUE ALL "=".
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  FILLER              PIC X(10)   VALUE ALL "=".
            05  FILLER              PIC X(4)    VALUE SPACE.
-           05  FILLER              PIC X(7)    VALUE ALL "=".
-           05  FILLER              PIC X(47)   VALUE "***".
+           05  FILLER              PIC X(9)    VALUE ALL "=".
 
        01  GRAND-TOTAL-LINE-2.
            05  FILLER              PIC X(43)   VALUE SPACE.
            05  GTL-SALES-THIS-YTD  PIC Z,ZZZ,ZZ9.99-.
            05  FILLER              PIC X(1)    VALUE SPACE.
            05  GTL-SALES-LAST-YTD  PIC Z,ZZZ,ZZ9.99-.
-           05  FILLER              PIC X(1)    VALUE SPACE.
            05  GTL-CHANGE-AMOUNT   PIC Z,ZZZ,ZZ9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  GTL-CHANGE-PERCENT  PIC ZZ9.9-.
-           05  FILLER              PIC X(37)   VALUE SPACE.
            05  FILLER              PIC X(47)   VALUE "***".
 
        01  DASH-SEPARATOR-LINE.
