@@ -16,6 +16,7 @@
        FILE-CONTROL.
            SELECT INPUT-CUSTMAST ASSIGN TO CUSTMAST.
            SELECT OUTPUT-RPT6000 ASSIGN TO RPT6000.
+           SELECT INPUT-SALESREP ASSIGN TO SALESREP.
 
        DATA DIVISION.
        FILE SECTION.
@@ -42,6 +43,17 @@
 
        01  PRINT-AREA      PIC X(130).
 
+       FD  INPUT-SALESREP
+           RECORDING MODE IS F
+           LABEL RECORDS ARE STANDARD
+           RECORD CONTAINS 130 CHARACTERS 
+           BLOCK CONTAINS 130 CHARACTERS.
+
+       01  SALESREP-MASTER-RECORD.
+           10 MST-SALESREP-NUMBER      PIC 99.
+           10 MST-SALESREP-NAME        PIC X(10).
+           05 FILLER                   PIC X(118).
+           
        WORKING-STORAGE SECTION.
 
        01 SALESREP-TABLE VALUE "09KWELLS  11TSMITH    12AJONES   14KB
@@ -50,7 +62,7 @@
                               INDEXED BY SRT-INDEX.
                10  SALESREP-NUMBER   PIC 9(2).
                10  SALESREP-NAME     PIC X(10).
-               
+
        01  SWITCHES.
            05  CUSTMAST-EOF-SWITCH     PIC X    VALUE "N".
               88 CUSTMAST-EOF                   VALUE "Y".
@@ -322,7 +334,7 @@
               AT END
                  MOVE "UNKNOWN" TO CL-SALESREP-NAME
               WHEN SALESREP-NUMBER (SRT-INDEX) = CM-SALESREP-NUMBER
-                 MOVE SALESREP-NAME (SRT-INDEX) TO CL-SALESREP-NAME 
+                 MOVE SALESREP-NAME (SRT-INDEX) TO CL-SALESREP-NAME
               END-SEARCH.
 
 
