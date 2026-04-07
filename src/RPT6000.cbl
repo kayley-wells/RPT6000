@@ -43,6 +43,14 @@
        01  PRINT-AREA      PIC X(130).
 
        WORKING-STORAGE SECTION.
+
+       01 SALESREP-TABLE VALUE "09KWELLS  11TSMITH    12AJONES   14KB
+      -    "AKER    17STRACKER 21FFRANKLIN ".
+           05  SALESREP-GROUP OCCURS 7 TIMES
+                              INDEXED BY SRT-INDEX.
+               10  SALESREP-NUMBER   PIC 9(2).
+               10  SALESREP-NAME     PIC X(10).
+               
        01  SWITCHES.
            05  CUSTMAST-EOF-SWITCH     PIC X    VALUE "N".
               88 CUSTMAST-EOF                   VALUE "Y".
@@ -146,6 +154,8 @@
            05  FILLER              PIC X(6)    VALUE SPACE.
            05  CL-SALESREP-NUMBER  PIC X(2).
            05  FILLER              PIC X(3)    VALUE SPACE.
+           05  CL-SALESREP-NAME    PIC X(10).
+           05  FILLER              PIC X(2)    VALUE SPACE.
            05  CL-CUSTOMER-NUMBER  PIC 9(5).
            05  FILLER              PIC X(2)    VALUE SPACE.
            05  CL-CUSTOMER-NAME    PIC X(20).
@@ -171,7 +181,6 @@
            05  STL-CHANGE-AMOUNT   PIC $$$,$$9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  STL-CHANGE-PERCENT  PIC +++9.9.
-           05  STL-CHANGE-PERCENT-R REDEFINES STL-CHANGE-PERCENT 
            05  STL-CHANGE-PERCENT-R REDEFINES STL-CHANGE-PERCENT
                                    PIC X(6).
            05  FILLER              PIC X(46)   VALUE "*".
@@ -186,7 +195,6 @@
            05  BTL-CHANGE-AMOUNT   PIC $$$,$$9.99-.
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  BTL-CHANGE-PERCENT  PIC +++9.9.
-           05  BTL-CHANGE-PERCENT-R REDEFINES BTL-CHANGE-PERCENT 
            05  BTL-CHANGE-PERCENT-R REDEFINES BTL-CHANGE-PERCENT
                                    PIC X(6).
            05  FILLER              PIC X(48)   VALUE "**".
@@ -274,13 +282,17 @@
 
            IF CM-BRANCH-NUMBER NOT = OLD-BRANCH-NUMBER
                 MOVE CM-BRANCH-NUMBER TO CL-BRANCH-NUMBER
+                PERFORM 325-MOVE-SALESREP-NAME
            ELSE
                 MOVE SPACES TO CL-BRANCH-NUMBER.
+                PERFORM 325-MOVE-SALESREP-NAME
 
            IF CM-SALESREP-NUMBER NOT = OLD-SALESREP-NUMBER
               MOVE CM-SALESREP-NUMBER TO CL-SALESREP-NUMBER
+              PERFORM 325-MOVE-SALESREP-NAME
            ELSE
               MOVE SPACES TO CL-SALESREP-NUMBER.
+              PERFORM 325-MOVE-SALESREP-NAME.
 
            MOVE CM-CUSTOMER-NUMBER TO CL-CUSTOMER-NUMBER.
            MOVE CM-CUSTOMER-NAME TO CL-CUSTOMER-NAME.
@@ -303,7 +315,16 @@
            ADD CM-SALES-LAST-YTD TO SALESREP-TOTAL-LAST-YTD.
            MOVE CM-SALESREP-NUMBER TO OLD-SALESREP-NUMBER.
            MOVE CM-BRANCH-NUMBER TO OLD-BRANCH-NUMBER.
-           
+
+       325-MOVE-SALESREP-NAME.
+           SET SRT-INDEX TO 1.
+           SEARCH SALESREP-GROUP
+              AT END
+                 MOVE "UNKNOWN" TO CL-SALESREP-NAME
+              WHEN SALESREP-NUMBER (SRT-INDEX) = CM-SALESREP-NUMBER
+                 MOVE SALESREP-NAME (SRT-INDEX) TO CL-SALESREP-NAME 
+              END-SEARCH.
+
 
        330-PRINT-HEADING-LINES.
            ADD 1 TO PAGE-COUNT.
@@ -341,13 +362,11 @@
               SALESREP-TOTAL-THIS-YTD - SALESREP-TOTAL-LAST-YTD.
            MOVE WS-CHANGE-AMOUNT TO STL-CHANGE-AMOUNT.
            IF SALESREP-TOTAL-LAST-YTD = ZERO
-              MOVE 999.9 TO STL-CHANGE-PERCENT
               MOVE "  N/A " TO STL-CHANGE-PERCENT-R
            ELSE
               COMPUTE STL-CHANGE-PERCENT ROUNDED =
                  WS-CHANGE-AMOUNT * 100 / SALESREP-TOTAL-LAST-YTD
                  ON SIZE ERROR
-                    MOVE 999.9 TO STL-CHANGE-PERCENT.
                     MOVE "OVRFLW" TO STL-CHANGE-PERCENT-R.
 
            MOVE SALESREP-TOTAL-LINE TO PRINT-AREA.
@@ -368,13 +387,11 @@
               BRANCH-TOTAL-THIS-YTD - BRANCH-TOTAL-LAST-YTD.
            MOVE WS-CHANGE-AMOUNT TO BTL-CHANGE-AMOUNT.
            IF BRANCH-TOTAL-LAST-YTD = ZERO
-              MOVE 999.9 TO BTL-CHANGE-PERCENT
               MOVE "  N/A " TO BTL-CHANGE-PERCENT-R
            ELSE
               COMPUTE BTL-CHANGE-PERCENT ROUNDED =
                  WS-CHANGE-AMOUNT * 100 / BRANCH-TOTAL-LAST-YTD
                  ON SIZE ERROR
-                    MOVE 999.9 TO BTL-CHANGE-PERCENT.
                     MOVE "OVRFLW" TO BTL-CHANGE-PERCENT-R.
            MOVE BRANCH-TOTAL-LINE TO PRINT-AREA.
            MOVE 1 TO SPACE-CONTROL.
