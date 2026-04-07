@@ -15,7 +15,7 @@
 
        FILE-CONTROL.
            SELECT INPUT-CUSTMAST ASSIGN TO CUSTMAST.
-           SELECT OUTPUT-RPT5000 ASSIGN TO RPT5000.
+           SELECT OUTPUT-RPT6000 ASSIGN TO RPT6000.
 
        DATA DIVISION.
        FILE SECTION.
@@ -34,7 +34,7 @@
            05  CM-SALES-LAST-YTD       PIC S9(5)V9(2).
            05  FILLER                  PIC X(87).
 
-       FD  OUTPUT-RPT5000
+       FD  OUTPUT-RPT6000
            RECORDING MODE IS F
            LABEL RECORDS ARE STANDARD
            RECORD CONTAINS 130 CHARACTERS
@@ -101,7 +101,7 @@
            05  FILLER          PIC X(1)    VALUE ":".
            05  HL2-MINUTES     PIC 9(2).
            05  FILLER          PIC X(72)   VALUE SPACE.
-           05  FILLER          PIC X(7)   VALUE "RPT5000".
+           05  FILLER          PIC X(7)   VALUE "RPT6000".
 
        01  HEADING-LINE-3.
            05  FILLER PIC X(8)  VALUE "BRANCH  ".
@@ -214,13 +214,13 @@
        PROCEDURE DIVISION.
        000-PREPARE-SALES-REPORT.
            OPEN INPUT  INPUT-CUSTMAST
-                OUTPUT OUTPUT-RPT5000.
+                OUTPUT OUTPUT-RPT6000.
            PERFORM 100-FORMAT-REPORT-HEADING.
            PERFORM 300-PREPARE-SALES-LINES
                UNTIL CUSTMAST-EOF.
            PERFORM 500-PRINT-GRAND-TOTALS.
            CLOSE INPUT-CUSTMAST
-                 OUTPUT-RPT5000.
+                 OUTPUT-RPT6000.
            STOP RUN.
 
 
@@ -378,7 +378,6 @@
            MOVE ZERO TO BRANCH-TOTAL-LAST-YTD.
 
            MOVE DASH-SEPARATOR-LINE TO PRINT-AREA
-           MOVE 1 TO SPACE-CONTROL
            PERFORM 350-WRITE-REPORT-LINE.
 
 
