@@ -226,20 +226,26 @@
 
        PROCEDURE DIVISION.
        000-PREPARE-SALES-REPORT.
+           
            INITIALIZE SALESREP-TABLE.
-           OPEN INPUT  INPUT-SALESREP.
-           PERFORM 200-LOAD-SALESREP-TABLE
-               UNTIL SALESREP-EOF.
-           CLOSE INPUT-SALESREP.
- 
+
            OPEN INPUT  INPUT-CUSTMAST
+                INPUT  INPUT-SALESREP 
                 OUTPUT OUTPUT-RPT6000.
-           PERFORM 100-FORMAT-REPORT-HEADING.
-           PERFORM 300-PREPARE-SALES-LINES
+
+           PERFORM 100-FORMAT-REPORT-HEADING 
+
+           PERFORM 200-LOAD-SALESREP-TABLE.
+
+           PERFORM 300-PREPARE-SALES-LINES 
                UNTIL CUSTMAST-EOF.
+
            PERFORM 500-PRINT-GRAND-TOTALS.
-           CLOSE INPUT-CUSTMAST
+
+           CLOSE INPUT-CUSTMAST 
+                 INPUT-SALESREP
                  OUTPUT-RPT6000.
+
            STOP RUN.
 
 
@@ -250,6 +256,27 @@
            MOVE CD-YEAR    TO HL1-YEAR.
            MOVE CD-HOURS   TO HL2-HOURS.
            MOVE CD-MINUTES TO HL2-MINUTES.
+
+
+       200-LOAD-SALESREP-TABLE.
+           PERFORM 210-READ-SALESREP-RECORD.
+           IF NOT SALESREP-EOF
+              SET SRT-INDEX TO 1
+              SEARCH SALESREP-GROUP
+                 AT END
+                    CONTINUE
+                 WHEN SALESREP-NUMBER (SRT-INDEX) = ZERO
+                    MOVE MST-SALESREP-NUMBER TO
+                         SALESREP-NUMBER (SRT-INDEX)
+                    MOVE MST-SALESREP-NAME   TO
+                         SALESREP-NAME   (SRT-INDEX)
+              END-SEARCH
+           END-IF.
+
+       210-READ-SALESREP-RECORD.
+           READ INPUT-SALESREP
+              AT END
+                 SET SALESREP-EOF TO TRUE.
 
 
        300-PREPARE-SALES-LINES.
