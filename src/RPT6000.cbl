@@ -56,13 +56,12 @@
            
        WORKING-STORAGE SECTION.
 
-       01 SALESREP-TABLE VALUE "09KWELLS  11TSMITH    12AJONES   14KB
-      -    "AKER    17STRACKER 21FFRANKLIN ".
-           05  SALESREP-GROUP OCCURS 7 TIMES
+       01  SALESREP-TABLE.
+           05  SALESREP-GROUP OCCURS 100 TIMES
                               INDEXED BY SRT-INDEX.
                10  SALESREP-NUMBER   PIC 9(2).
                10  SALESREP-NAME     PIC X(10).
-
+               
        01  SWITCHES.
            05  CUSTMAST-EOF-SWITCH     PIC X    VALUE "N".
               88 CUSTMAST-EOF                   VALUE "Y".
