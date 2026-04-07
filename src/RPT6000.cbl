@@ -54,12 +54,14 @@
            05  OLD-BRANCH-NUMBER       PIC 99.
 
        01  PRINT-FIELDS.
+       01  PRINT-FIELDS        PACKED-DECIMAL.
            05  PAGE-COUNT      PIC S9(3)   VALUE ZERO.
            05  LINES-ON-PAGE   PIC S9(3)   VALUE +55.
            05  LINE-COUNT      PIC S9(3)   VALUE +99.
            05  SPACE-CONTROL   PIC S9.
 
        01  TOTAL-FIELDS.
+       01  TOTAL-FIELDS               PACKED-DECIMAL.
            05 SALESREP-TOTAL-THIS-YTD PIC S9(6)V99   VALUE ZERO.
            05 SALESREP-TOTAL-LAST-YTD PIC S9(6)V99   VALUE ZERO.
            05 BRANCH-TOTAL-THIS-YTD   PIC S9(6)V99   VALUE ZERO.
@@ -70,6 +72,7 @@
            05 GRAND-TOTAL-CHANGE-PCT  PIC S9(3)V9    VALUE ZERO.
 
        01  CALCULATION-FIELDS.
+       01  CALCULATION-FIELDS         PACKED-DECIMAL.
            05  WS-CHANGE-AMOUNT       PIC S9(7)V99   VALUE ZERO.
            05  WS-CHANGE-PERCENT      PIC S9(3)V9    VALUE ZERO.
 
@@ -176,7 +179,7 @@
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  STL-CHANGE-PERCENT  PIC ZZ9.9-.
            05  STL-CHANGE-PERCENT  PIC +++9.9.
-           05  STL-CHANGE-PERCENT-R REDEFINES STL-CHANGE-PERCENT 
+           05  STL-CHANGE-PERCENT-R REDEFINES STL-CHANGE-PERCENT
                                    PIC X(6).
            05  FILLER              PIC X(46)   VALUE "*".
 
@@ -194,7 +197,7 @@
            05  FILLER              PIC X(4)    VALUE SPACE.
            05  BTL-CHANGE-PERCENT  PIC ZZ9.9-.
            05  BTL-CHANGE-PERCENT  PIC +++9.9.
-           05  BTL-CHANGE-PERCENT-R REDEFINES BTL-CHANGE-PERCENT 
+           05  BTL-CHANGE-PERCENT-R REDEFINES BTL-CHANGE-PERCENT
                                    PIC X(6).
            05  FILLER              PIC X(48)   VALUE "**".
 
