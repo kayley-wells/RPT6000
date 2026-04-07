@@ -65,6 +65,8 @@
        01  SWITCHES.
            05  CUSTMAST-EOF-SWITCH     PIC X    VALUE "N".
               88 CUSTMAST-EOF                   VALUE "Y".
+           05  SALESREP-EOF-SWITCH     PIC X    VALUE "N".
+              88 SALESREP-EOF                   VALUE "Y".
            05  FIRST-RECORD-SWITCH     PIC X    VALUE "Y".
               88 NOT-FIRST-RECORD               VALUE "N".
 
