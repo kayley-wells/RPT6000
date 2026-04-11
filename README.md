@@ -57,33 +57,53 @@ After all records are processed, the program:
 ## Output Example
 
 ```
-DATE:  03/24/2026                    YEAR-TO-DATE SALES REPORT                          PAGE:    1
-TIME:  09:45                                                                            RPT6000
+DATE:  04/10/2026                          YEAR-TO-DATE SALES REPORT                          PAGE:    1
+TIME:  23:54                                                                                  RPT6000
+                                                      SALES         SALES        CHANGE     CHANGE
+BRANCH   SALESREP             CUSTOMER              THIS YTD      LAST YTD       AMOUNT     PERCENT
+------ ------------- --------------------------   ------------  ------------   -----------  -------
+  12   12 AJONES     11111 INFORMATION BUILDERS       1,234.56      1,111.11        123.45    +11.1
+                     12345 CAREER TRAINING CTR       12,345.67     22,222.22      9,876.55-   -44.4
 
-                                                        SALES         SALES          CHANGE     CHANGE
-BRANCH   SALESREP                   CUSTOMER           THIS YTD      LAST YTD        AMOUNT     PERCENT
-------   -------------              --------------------------   ------------   ------------   -------
- 01   01 SMITH       10001 ACME SUPPLY CO.          12,345.00      11,000.00       1,345.00      12.2
-                     10002 GLOBE INDUSTRIES          8,200.50       9,100.00         -899.50-      9.9-
-                     10003 HORIZON TECH              5,000.00           0.00        5,000.00       N/A
+                                    SALESREP TOTAL  $13,580.23    $23,333.33     $9,753.10-   -41.8*
 
-                                        SALESREP TOTAL  $25,545.50    $20,100.00     $5,445.50      27.1 *
+                                      BRANCH TOTAL  $13,580.23    $23,333.33     $9,753.10-   -41.8**
 
- 01   02 JONES       10004 DELTA CORP               22,000.00      18,500.00       3,500.00      18.9
-                     10005 SUMMIT PARTNERS           3,750.00       4,000.00         -250.00-      6.3-
+  22   10 UNKNOWN    22222 HOMELITE TEXTRON CO       34,545.00          0.00     34,545.00     N/A
 
-                                        SALESREP TOTAL  $25,750.00    $22,500.00     $3,250.00      14.4 *
+                                    SALESREP TOTAL  $34,545.00         $0.00    $34,545.00     N/A *
 
-                                          BRANCH TOTAL  $51,295.50    $42,600.00     $8,695.50      20.4 **
+       14 KBAKER     34567 NEAS MEMBER BENEFITS         111.11          0.00        111.11     N/A
+                     55555 PILOT LIFE INS. CO.       10,000.00      1,000.00      9,000.00   +900.0
 
- 02   05 TAYLOR      20001 KEYSTONE INC.            47,890.00      45,000.00       2,890.00       6.4
-                     20002 NATIONAL SERVICES        10,200.00      10,200.00           0.00       0.0
+                                    SALESREP TOTAL  $10,111.11     $1,000.00     $9,111.11   +911.1*
 
-                                        SALESREP TOTAL  $58,090.00    $55,200.00     $2,890.00       5.2 *
+                                      BRANCH TOTAL  $44,656.11     $1,000.00    $43,656.11   OVRFLW**
 
-                                          BRANCH TOTAL  $58,090.00    $55,200.00     $2,890.00       5.2 **
+  34   10 UNKNOWN    00111 DAUPHIN DEPOSIT BANK      14,099.00     19,930.00      5,831.00-   -29.3
+                     54321 AIRCRAFT OWNERS ASSC       5,426.12     40,420.00     34,993.88-   -86.6
 
-                                           GRAND TOTAL $109,385.50    $97,800.00    $11,585.50      11.8 ***
+                                    SALESREP TOTAL  $19,525.12    $60,350.00    $40,824.88-   -67.6*
+
+       17 STRACKER   33333 NORFOLK CORP               6,396.35      4,462.88      1,933.47    +43.3
+
+                                    SALESREP TOTAL   $6,396.35     $4,462.88     $1,933.47    +43.3*
+
+                                      BRANCH TOTAL  $25,921.47    $64,812.88    $38,891.41-   -60.0**
+
+  47   11 TSMITH     12121 GENERAL SERVICES CO.      11,444.00     11,059.56        384.44     +3.5
+                     24680 INFO MANAGEMENT CO.       17,481.45     11,892.47      5,588.98    +47.0
+
+                                    SALESREP TOTAL  $28,925.45    $22,952.03     $5,973.42    +26.0*
+
+       21 FFRANKLIN  99999 DOLLAR SAVINGS BANK        5,059.00      4,621.95        437.05     +9.5
+                     76543 NATL MUSIC CORP.           2,383.46      4,435.26      2,051.80-   -46.3
+
+                                    SALESREP TOTAL   $7,442.46     $9,057.21     $1,614.75-   -17.8*
+
+                                      BRANCH TOTAL  $36,367.91    $32,009.24     $4,358.67    +13.6**
+
+                                       GRAND TOTAL $120,525.72   $121,155.45       $629.73-    -0.5***
 ```
 
 ## COBOL Compilers for Output
