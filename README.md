@@ -1,6 +1,6 @@
-# RPT2000 (COBOL Program)
+# RPT6000 (COBOL Program)
+**Table of Contents**
 
-<b>Table of Contents</b>
 - [Summary](#summary)
 - [Report Logic](#report-logic)
 - [Program Flow](#program-flow)
@@ -8,19 +8,15 @@
 - [Maintainers](#maintainers)
 
 ## Summary
-RPT2000 is a COBOL batch reporting program that reads the Customer Master File and produces a formatted Year-to-Date Sales Report. The report includes each customer's current and prior year sales figures, along with a calculated change amount and change percent for performance comparison.
 
-Only customers with current YTD sales of $10,000.00 or greater are included in the report output.
+RPT6000 is a COBOL batch reporting program that reads the Customer Master File and Sales Rep Master File to produce a formatted Year-to-Date Sales Report. The report includes each customer's current and prior year sales figures, along with a calculated change amount and change percent for performance comparison.
 
+The report is organized in a two-level control-break hierarchy — Branch → Sales Rep → Customer — with subtotals printed at each level and a final grand total at the end.
 
-The program is designed to run in a mainframe environment using:
--TN3270
--ISPF (editing and dataset navigation)
--SDSF (job output and error review)
 
 ### Report Logic
 
-For each qualifying customer, the program calculates:
+For each customer, the program calculates:
 
 | Field | Calculation |
 |-------|-------------|
@@ -28,53 +24,76 @@ For each qualifying customer, the program calculates:
 | Change Percent | (Change Amount * 100) / CM-SALES-LAST-YTD, rounded |
 
 Special cases for Change Percent:
-- If CM-SALES-LAST-YTD is zero, outputs 999.9
-- If the result overflows the picture clause, outputs 999.9
+- If the last YTD value is zero, outputs `N/A`
+- If the result overflows the picture clause, outputs `OVRFLW`
 
-Grand totals use the same logic applied to the accumulated totals for all qualifying customers.
+The same logic is applied at the Sales Rep total, Branch total, and Grand total levels. Grand total uses `999.9` instead of `OVRFLW` for overflow.
+
+Sales Rep names are looked up from an in-memory table (up to 100 entries) loaded at startup from the Sales Rep Master File. If a sales rep number cannot be found in the table, the name prints as `UNKNOWN`.
 
 ### Program Flow
+
+At startup, the program:
+- Loads the Sales Rep Master File into an in-memory table indexed by sales rep number
+- Formats report headings using the current system date and time
+
 For each customer record, the program:
 - Reads the next record from the Customer Master File
-- Skips the record if CM-SALES-THIS-YTD is less than $10,000.00
-- Checks if a new heading page is needed (every 55 lines)
+- Checks if a page heading is needed (every 55 lines)
+- Detects control breaks by comparing branch and sales rep numbers to saved values
+- On a Sales Rep break — prints a Sales Rep total line, resets Sales Rep accumulators
+- On a Branch break — prints a Sales Rep total line, then a Branch total line, resets Branch accumulators
 - Moves customer number, name, and sales fields to the detail line
 - Computes change amount and change percent
 - Writes the formatted detail line
-- Accumulates sales totals for the grand total line
+- Accumulates sales totals into Sales Rep, Branch, and Grand total fields
 
 After all records are processed, the program:
-- Computes grand total change amount and change percent
-- Writes the grand total line and stops
+- Prints the final Sales Rep total line
+- Prints the final Branch total line
+- Computes and writes the Grand total line
+- Closes all files and stops
 
 ## Output Example
+
 ```
-DATE:  03/05/2026           YEAR-TO-DATE SALES REPORT                 PAGE:    1
-TIME:  13:20                                                          RPT2000
- 
-BRANCH SALES CUST                           SALES         SALES          CHANGE      CHANGE
- NUM    REP  NUM    CUST NAME              THIS YTD      LAST YTD        AMOUNT      PERCENT
------- ----- -----  --------------------  ----------    ----------     ----------    -------
-  12    12   11111  INFORMATION BUILDERS    1,234.56      1,111.11        123.45       11.1
-  12    12   12345  CAREER TRAINING CTR    12,345.67     22,222.22      9,876.55-      44.4-
-  22    10   22222  HOMELITE TEXTRON CO    34,545.00          0.00     34,545.00      999.9
-  22    14   34567  NEAS MEMBER BENEFITS      111.11          0.00        111.11      999.9
-  22    14   55555  PILOT LIFE INS. CO.    10,000.00      1,000.00      9,000.00      900.0
-  34    10   00111  DAUPHIN DEPOSIT BANK   14,099.00     19,930.00      5,831.00-      29.3-
-  34    10   54321  AIRCRAFT OWNERS ASSC    5,426.12     40,420.00     34,993.88-      86.6-
-  34    17   33333  NORFOLK CORP            6,396.35      4,462.88      1,933.47       43.3
-  47    11   12121  GENERAL SERVICES CO.   11,444.00     11,059.56        384.44        3.5
-  47    11   24680  INFO MANAGEMENT CO.    17,481.45     11,892.47      5,588.98       47.0
-  47    21   99999  DOLLAR SAVINGS BANK     5,059.00      4,621.95        437.05        9.5
-  47    21   76543  NATL MUSIC CORP.        2,383.46      4,435.26      2,051.80-      46.3-
-                                        ============= ============= =============     ======
-                                          120,525.72    121,155.45        629.73-       0.0 
+DATE:  03/24/2026                    YEAR-TO-DATE SALES REPORT                          PAGE:    1
+TIME:  09:45                                                                            RPT6000
+
+                                                        SALES         SALES          CHANGE     CHANGE
+BRANCH   SALESREP                   CUSTOMER           THIS YTD      LAST YTD        AMOUNT     PERCENT
+------   -------------              --------------------------   ------------   ------------   -------
+ 01   01 SMITH       10001 ACME SUPPLY CO.          12,345.00      11,000.00       1,345.00      12.2
+                     10002 GLOBE INDUSTRIES          8,200.50       9,100.00         -899.50-      9.9-
+                     10003 HORIZON TECH              5,000.00           0.00        5,000.00       N/A
+
+                                        SALESREP TOTAL  $25,545.50    $20,100.00     $5,445.50      27.1 *
+
+ 01   02 JONES       10004 DELTA CORP               22,000.00      18,500.00       3,500.00      18.9
+                     10005 SUMMIT PARTNERS           3,750.00       4,000.00         -250.00-      6.3-
+
+                                        SALESREP TOTAL  $25,750.00    $22,500.00     $3,250.00      14.4 *
+
+                                          BRANCH TOTAL  $51,295.50    $42,600.00     $8,695.50      20.4 **
+
+ 02   05 TAYLOR      20001 KEYSTONE INC.            47,890.00      45,000.00       2,890.00       6.4
+                     20002 NATIONAL SERVICES        10,200.00      10,200.00           0.00       0.0
+
+                                        SALESREP TOTAL  $58,090.00    $55,200.00     $2,890.00       5.2 *
+
+                                          BRANCH TOTAL  $58,090.00    $55,200.00     $2,890.00       5.2 **
+
+                                           GRAND TOTAL $109,385.50    $97,800.00    $11,585.50      11.8 ***
 ```
+
 ## COBOL Compilers for Output
+
 If you are unsure how to run this program, put the code into one of the following online COBOL compilers. Also, this code is able to be submitted to the mainframe if you have a license to TN3270 software. Remember to edit the JCL to your username before submitting!
+
 - https://www.jdoodle.com/ia/1PcS
 - https://onecompiler.com/cobol/44b45fp2x
 - https://paiza.io/en/languages/cobol
 
 ## Maintainers
+
 - [@kayley-wells](https://github.com/kayley-wells) Kayley Wells
